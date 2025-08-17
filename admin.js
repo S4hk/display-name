@@ -34,18 +34,19 @@ jQuery(document).ready(function($) {
                         completeBatch();
                     }
                 } else {
-                    handleError(response.data);
+                    handleError(response.data || 'Unknown error occurred');
                 }
             },
-            error: function() {
-                handleError('An error occurred during processing.');
+            error: function(xhr, status, error) {
+                console.log('AJAX Error:', xhr.responseText);
+                handleError('Server error: ' + error);
             }
         });
     }
     
     function updateProgress(processed) {
         const totalUsers = parseInt($('#progress-text').text().split(' / ')[1]);
-        const percentage = (processed / totalUsers) * 100;
+        const percentage = Math.min((processed / totalUsers) * 100, 100);
         
         $('#progress-text').text(processed + ' / ' + totalUsers);
         $('.progress-fill').css('width', percentage + '%');

@@ -18,6 +18,7 @@ class DynamicDisplayNameManager {
     
     private $option_name = 'ddnm_settings';
     private $batch_size = 50;
+    private $processing_user = false; // Flag to prevent infinite loops
     
     public function __construct() {
         add_action('init', array($this, 'init'));
@@ -126,53 +127,86 @@ class DynamicDisplayNameManager {
     }
     
     public function ajax_process_batch() {
-        if (!wp_verify_nonce($_POST['nonce'], 'ddnm_nonce') || !current_user_can('manage_options')) {
-            wp_die('Security check failed');
+        // Log the request for debugging
+        error_log('DDNM: AJAX request received - ' . print_r($_POST, true));
+        
+        // Check nonce and capabilities
+        $nonce = isset($_POST['nonce']) ? $_POST['nonce'] : '';
+        if (!wp_verify_nonce($nonce, 'ddnm_nonce')) {
+            error_log('DDNM: Nonce verification failed');
+            wp_send_json_error('Security check failed - Invalid nonce');
+            return;
         }
         
-        $offset = intval($_POST['offset']);
+        if (!current_user_can('manage_options')) {
+            error_log('DDNM: User capability check failed');
+            wp_send_json_error('Security check failed - Insufficient permissions');
+            return;
+        }
+        
+        $offset = isset($_POST['offset']) ? intval($_POST['offset']) : 0;
         $settings = get_option($this->option_name, array());
         
+        error_log('DDNM: Settings - ' . print_r($settings, true));
+        
         if (empty($settings)) {
+            error_log('DDNM: No fields selected');
             wp_send_json_error('No fields selected');
+            return;
         }
         
-        $users = get_users(array(
-            'number' => $this->batch_size,
-            'offset' => $offset,
-            'fields' => 'all'
-        ));
-        
-        $processed = 0;
-        foreach ($users as $user) {
-            $this->update_user_display_name_by_settings($user->ID, $settings);
-            $processed++;
+        try {
+            $users = get_users(array(
+                'number' => $this->batch_size,
+                'offset' => $offset,
+                'fields' => 'all'
+            ));
+            
+            error_log('DDNM: Found ' . count($users) . ' users at offset ' . $offset);
+            
+            $processed = 0;
+            foreach ($users as $user) {
+                if ($this->update_user_display_name_by_settings($user->ID, $settings, true)) {
+                    $processed++;
+                }
+            }
+            
+            error_log('DDNM: Processed ' . $processed . ' users successfully');
+            
+            wp_send_json_success(array(
+                'processed' => $processed,
+                'has_more' => count($users) === $this->batch_size
+            ));
+            
+        } catch (Exception $e) {
+            error_log('DDNM: Exception - ' . $e->getMessage());
+            wp_send_json_error('Processing error: ' . $e->getMessage());
         }
-        
-        wp_send_json_success(array(
-            'processed' => $processed,
-            'has_more' => count($users) === $this->batch_size
-        ));
     }
     
     public function set_new_user_display_name($user_id) {
         $settings = get_option($this->option_name, array());
         if (!empty($settings)) {
-            $this->update_user_display_name_by_settings($user_id, $settings);
+            $this->update_user_display_name_by_settings($user_id, $settings, true);
         }
     }
     
     public function update_user_display_name($user_id) {
+        // Prevent infinite loops
+        if ($this->processing_user === $user_id) {
+            return;
+        }
+        
         $settings = get_option($this->option_name, array());
         if (!empty($settings)) {
             $this->update_user_display_name_by_settings($user_id, $settings);
         }
     }
     
-    private function update_user_display_name_by_settings($user_id, $settings) {
+    private function update_user_display_name_by_settings($user_id, $settings, $force_update = false) {
         $user = get_userdata($user_id);
         if (!$user) {
-            return;
+            return false;
         }
         
         $display_parts = array();
@@ -207,14 +241,31 @@ class DynamicDisplayNameManager {
             }
         }
         
-        $display_name = implode(' ', $display_parts);
+        $new_display_name = implode(' ', $display_parts);
         
-        if (!empty($display_name)) {
-            wp_update_user(array(
+        // Only update if the display name is different or we're forcing an update
+        if (!empty($new_display_name) && ($force_update || $user->display_name !== $new_display_name)) {
+            // Prevent infinite loop by setting the processing flag
+            $this->processing_user = $user_id;
+            
+            // Temporarily remove the profile_update hook to prevent infinite loop
+            remove_action('profile_update', array($this, 'update_user_display_name'));
+            
+            $result = wp_update_user(array(
                 'ID' => $user_id,
-                'display_name' => $display_name
+                'display_name' => $new_display_name
             ));
+            
+            // Re-add the profile_update hook
+            add_action('profile_update', array($this, 'update_user_display_name'));
+            
+            // Reset the processing flag
+            $this->processing_user = false;
+            
+            return !is_wp_error($result);
         }
+        
+        return false;
     }
 }
 
