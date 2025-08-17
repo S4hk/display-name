@@ -85,3 +85,9 @@ msgstr ""
 
 msgid "Settings"
 msgstr ""
+
+msgid "Configure"
+msgstr ""
+
+msgid "Configure user display names using selected user fields (username, email, first name, last name, website, role) with batch processing."
+msgstr ""

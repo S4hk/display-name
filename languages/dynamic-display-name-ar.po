@@ -94,3 +94,9 @@ msgstr "خطأ"
 
 msgid "Settings"
 msgstr "الإعدادات"
+
+msgid "Configure"
+msgstr "إعداد"
+
+msgid "Configure user display names using selected user fields (username, email, first name, last name, website, role) with batch processing."
+msgstr "تكوين أسماء المستخدمين المعروضة باستخدام حقول المستخدم المحددة (اسم المستخدم، البريد الإلكتروني، الاسم الأول، اسم العائلة، الموقع الإلكتروني، الدور) مع المعالجة المجمعة."

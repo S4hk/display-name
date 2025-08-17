@@ -1,10 +1,11 @@
 <?php
 /**
  * Plugin Name: Dynamic Display Name Manager
- * Plugin URI: https://github.com/yourname/dynamic-display-name-manager
+ * Plugin URI: https://github.com/S4hk/dynamic-display-name-manager
  * Description: Configure user display names using selected user fields (username, email, first name, last name, website, role) with batch processing.
  * Version: 1.0.0
- * Author: Your Name
+ * Author: s4hk
+ * Author URI: https://github.com/s4hk
  * License: GPL v2 or later
  * Text Domain: dynamic-display-name
  * Domain Path: /languages
@@ -41,6 +42,7 @@ class DynamicDisplayNameManager {
         add_action('user_register', array($this, 'set_new_user_display_name'));
         add_action('profile_update', array($this, 'update_user_display_name'));
         add_filter('plugin_action_links_' . plugin_basename(__FILE__), array($this, 'add_plugin_action_links'));
+        add_filter('plugin_row_meta', array($this, 'add_plugin_row_meta'), 10, 2);
     }
     
     public function add_admin_menu() {
@@ -56,6 +58,16 @@ class DynamicDisplayNameManager {
     public function add_plugin_action_links($links) {
         $settings_link = '<a href="' . admin_url('tools.php?page=dynamic-display-name-manager') . '">' . __('Settings', 'dynamic-display-name') . '</a>';
         array_unshift($links, $settings_link);
+        return $links;
+    }
+    
+    public function add_plugin_row_meta($links, $file) {
+        if ($file === plugin_basename(__FILE__)) {
+            $row_meta = array(
+                'configure' => '<a href="' . admin_url('tools.php?page=dynamic-display-name-manager') . '">' . __('Configure', 'dynamic-display-name') . '</a>'
+            );
+            return array_merge($links, $row_meta);
+        }
         return $links;
     }
     

@@ -81,3 +81,9 @@ msgstr "Processing error: %s"
 
 msgid "Settings"
 msgstr "Settings"
+
+msgid "Configure"
+msgstr "Configure"
+
+msgid "Configure user display names using selected user fields (username, email, first name, last name, website, role) with batch processing."
+msgstr "Configure user display names using selected user fields (username, email, first name, last name, website, role) with batch processing."
