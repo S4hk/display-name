@@ -1,13 +1,13 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the Dynamic Display Name Manager package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Dynamic Display Name Manager 1.0.0\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: https://github.com/S4hk/dynamic-display-name-manager\n"
 "POT-Creation-Date: 2025-01-17 12:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
@@ -83,6 +83,15 @@ msgstr ""
 msgid "Processing error: %s"
 msgstr ""
 
+msgid "Unknown error occurred"
+msgstr ""
+
+msgid "Server error"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
 msgid "Settings"
 msgstr ""
 
@@ -90,4 +99,13 @@ msgid "Configure"
 msgstr ""
 
 msgid "Configure user display names using selected user fields (username, email, first name, last name, website, role) with batch processing."
+msgstr ""
+
+msgid "This plugin requires PHP 7.4 or higher."
+msgstr ""
+
+msgid "Plugin Activation Error"
+msgstr ""
+
+msgid "You do not have sufficient permissions to access this page."
 msgstr ""
