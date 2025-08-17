@@ -34,12 +34,12 @@ jQuery(document).ready(function($) {
                         completeBatch();
                     }
                 } else {
-                    handleError(response.data || 'Unknown error occurred');
+                    handleError(response.data || ddnm_ajax.strings.unknown_error);
                 }
             },
             error: function(xhr, status, error) {
                 console.log('AJAX Error:', xhr.responseText);
-                handleError('Server error: ' + error);
+                handleError(ddnm_ajax.strings.server_error + ': ' + error);
             }
         });
     }
@@ -63,6 +63,6 @@ jQuery(document).ready(function($) {
         isProcessing = false;
         $('#start-batch-process').prop('disabled', false);
         $('#batch-progress').hide();
-        alert('Error: ' + message);
+        alert(ddnm_ajax.strings.error_prefix + ': ' + message);
     }
 });

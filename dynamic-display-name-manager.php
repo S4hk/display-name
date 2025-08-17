@@ -7,6 +7,7 @@
  * Author: Your Name
  * License: GPL v2 or later
  * Text Domain: dynamic-display-name
+ * Domain Path: /languages
  */
 
 // Prevent direct access
@@ -22,6 +23,15 @@ class DynamicDisplayNameManager {
     
     public function __construct() {
         add_action('init', array($this, 'init'));
+        add_action('plugins_loaded', array($this, 'load_textdomain'));
+    }
+    
+    public function load_textdomain() {
+        load_plugin_textdomain(
+            'dynamic-display-name',
+            false,
+            dirname(plugin_basename(__FILE__)) . '/languages/'
+        );
     }
     
     public function init() {
@@ -34,8 +44,8 @@ class DynamicDisplayNameManager {
     
     public function add_admin_menu() {
         add_options_page(
-            'Dynamic Display Name Manager',
-            'Display Name Manager',
+            __('Dynamic Display Name Manager', 'dynamic-display-name'),
+            __('Display Name Manager', 'dynamic-display-name'),
             'manage_options',
             'dynamic-display-name-manager',
             array($this, 'admin_page')
@@ -53,7 +63,12 @@ class DynamicDisplayNameManager {
         wp_localize_script('ddnm-admin', 'ddnm_ajax', array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('ddnm_nonce'),
-            'batch_size' => $this->batch_size
+            'batch_size' => $this->batch_size,
+            'strings' => array(
+                'unknown_error' => __('Unknown error occurred', 'dynamic-display-name'),
+                'server_error' => __('Server error', 'dynamic-display-name'),
+                'error_prefix' => __('Error', 'dynamic-display-name')
+            )
         ));
     }
     
@@ -66,47 +81,47 @@ class DynamicDisplayNameManager {
         $total_users = count_users()['total_users'];
         ?>
         <div class="wrap">
-            <h1>Dynamic Display Name Manager</h1>
+            <h1><?php _e('Dynamic Display Name Manager', 'dynamic-display-name'); ?></h1>
             
             <form method="post" action="">
                 <?php wp_nonce_field('ddnm_save_settings', 'ddnm_nonce'); ?>
                 
                 <table class="form-table">
                     <tr>
-                        <th scope="row">Display Name Fields</th>
+                        <th scope="row"><?php _e('Display Name Fields', 'dynamic-display-name'); ?></th>
                         <td>
                             <fieldset>
-                                <legend class="screen-reader-text"><span>Display Name Fields</span></legend>
-                                <label><input type="checkbox" name="ddnm_fields[]" value="username" <?php checked(in_array('username', $settings)); ?>> Username</label><br>
-                                <label><input type="checkbox" name="ddnm_fields[]" value="email" <?php checked(in_array('email', $settings)); ?>> Email</label><br>
-                                <label><input type="checkbox" name="ddnm_fields[]" value="first_name" <?php checked(in_array('first_name', $settings)); ?>> First Name</label><br>
-                                <label><input type="checkbox" name="ddnm_fields[]" value="last_name" <?php checked(in_array('last_name', $settings)); ?>> Last Name</label><br>
-                                <label><input type="checkbox" name="ddnm_fields[]" value="website" <?php checked(in_array('website', $settings)); ?>> Website</label><br>
-                                <label><input type="checkbox" name="ddnm_fields[]" value="role" <?php checked(in_array('role', $settings)); ?>> Role</label>
+                                <legend class="screen-reader-text"><span><?php _e('Display Name Fields', 'dynamic-display-name'); ?></span></legend>
+                                <label><input type="checkbox" name="ddnm_fields[]" value="username" <?php checked(in_array('username', $settings)); ?>> <?php _e('Username', 'dynamic-display-name'); ?></label><br>
+                                <label><input type="checkbox" name="ddnm_fields[]" value="email" <?php checked(in_array('email', $settings)); ?>> <?php _e('Email', 'dynamic-display-name'); ?></label><br>
+                                <label><input type="checkbox" name="ddnm_fields[]" value="first_name" <?php checked(in_array('first_name', $settings)); ?>> <?php _e('First Name', 'dynamic-display-name'); ?></label><br>
+                                <label><input type="checkbox" name="ddnm_fields[]" value="last_name" <?php checked(in_array('last_name', $settings)); ?>> <?php _e('Last Name', 'dynamic-display-name'); ?></label><br>
+                                <label><input type="checkbox" name="ddnm_fields[]" value="website" <?php checked(in_array('website', $settings)); ?>> <?php _e('Website', 'dynamic-display-name'); ?></label><br>
+                                <label><input type="checkbox" name="ddnm_fields[]" value="role" <?php checked(in_array('role', $settings)); ?>> <?php _e('Role', 'dynamic-display-name'); ?></label>
                             </fieldset>
-                            <p class="description">Select which fields to include in the display name (separated by spaces).</p>
+                            <p class="description"><?php _e('Select which fields to include in the display name (separated by spaces).', 'dynamic-display-name'); ?></p>
                         </td>
                     </tr>
                 </table>
                 
-                <?php submit_button('Save Settings'); ?>
+                <?php submit_button(__('Save Settings', 'dynamic-display-name')); ?>
             </form>
             
             <?php if (!empty($settings)): ?>
             <hr>
-            <h2>Update Existing Users</h2>
-            <p>Apply the current display name format to all existing users (<?php echo $total_users; ?> users).</p>
-            <button type="button" id="start-batch-process" class="button button-primary">Start Batch Update</button>
+            <h2><?php _e('Update Existing Users', 'dynamic-display-name'); ?></h2>
+            <p><?php printf(__('Apply the current display name format to all existing users (%d users).', 'dynamic-display-name'), $total_users); ?></p>
+            <button type="button" id="start-batch-process" class="button button-primary"><?php _e('Start Batch Update', 'dynamic-display-name'); ?></button>
             
             <div id="batch-progress" style="display: none;">
-                <p>Processing users... <span id="progress-text">0 / <?php echo $total_users; ?></span></p>
+                <p><?php _e('Processing users...', 'dynamic-display-name'); ?> <span id="progress-text">0 / <?php echo $total_users; ?></span></p>
                 <div class="progress-bar">
                     <div class="progress-fill" style="width: 0%;"></div>
                 </div>
             </div>
             
             <div id="batch-complete" style="display: none;">
-                <p><strong>Batch update completed successfully!</strong></p>
+                <p><strong><?php _e('Batch update completed successfully!', 'dynamic-display-name'); ?></strong></p>
             </div>
             <?php endif; ?>
         </div>
@@ -115,43 +130,35 @@ class DynamicDisplayNameManager {
     
     private function save_settings() {
         if (!wp_verify_nonce($_POST['ddnm_nonce'], 'ddnm_save_settings')) {
-            wp_die('Security check failed');
+            wp_die(__('Security check failed', 'dynamic-display-name'));
         }
         
         $fields = isset($_POST['ddnm_fields']) ? array_map('sanitize_text_field', $_POST['ddnm_fields']) : array();
         update_option($this->option_name, $fields);
         
         add_action('admin_notices', function() {
-            echo '<div class="notice notice-success is-dismissible"><p>Settings saved successfully!</p></div>';
+            echo '<div class="notice notice-success is-dismissible"><p>' . __('Settings saved successfully!', 'dynamic-display-name') . '</p></div>';
         });
     }
     
     public function ajax_process_batch() {
-        // Log the request for debugging
-        error_log('DDNM: AJAX request received - ' . print_r($_POST, true));
-        
         // Check nonce and capabilities
         $nonce = isset($_POST['nonce']) ? $_POST['nonce'] : '';
         if (!wp_verify_nonce($nonce, 'ddnm_nonce')) {
-            error_log('DDNM: Nonce verification failed');
-            wp_send_json_error('Security check failed - Invalid nonce');
+            wp_send_json_error(__('Security check failed - Invalid nonce', 'dynamic-display-name'));
             return;
         }
         
         if (!current_user_can('manage_options')) {
-            error_log('DDNM: User capability check failed');
-            wp_send_json_error('Security check failed - Insufficient permissions');
+            wp_send_json_error(__('Security check failed - Insufficient permissions', 'dynamic-display-name'));
             return;
         }
         
         $offset = isset($_POST['offset']) ? intval($_POST['offset']) : 0;
         $settings = get_option($this->option_name, array());
         
-        error_log('DDNM: Settings - ' . print_r($settings, true));
-        
         if (empty($settings)) {
-            error_log('DDNM: No fields selected');
-            wp_send_json_error('No fields selected');
+            wp_send_json_error(__('No fields selected', 'dynamic-display-name'));
             return;
         }
         
@@ -162,8 +169,6 @@ class DynamicDisplayNameManager {
                 'fields' => 'all'
             ));
             
-            error_log('DDNM: Found ' . count($users) . ' users at offset ' . $offset);
-            
             $processed = 0;
             foreach ($users as $user) {
                 if ($this->update_user_display_name_by_settings($user->ID, $settings, true)) {
@@ -171,16 +176,13 @@ class DynamicDisplayNameManager {
                 }
             }
             
-            error_log('DDNM: Processed ' . $processed . ' users successfully');
-            
             wp_send_json_success(array(
                 'processed' => $processed,
                 'has_more' => count($users) === $this->batch_size
             ));
             
         } catch (Exception $e) {
-            error_log('DDNM: Exception - ' . $e->getMessage());
-            wp_send_json_error('Processing error: ' . $e->getMessage());
+            wp_send_json_error(sprintf(__('Processing error: %s', 'dynamic-display-name'), $e->getMessage()));
         }
     }
     
