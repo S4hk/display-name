@@ -78,3 +78,6 @@ msgstr "No fields selected"
 
 msgid "Processing error: %s"
 msgstr "Processing error: %s"
+
+msgid "Settings"
+msgstr "Settings"

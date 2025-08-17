@@ -40,10 +40,11 @@ class DynamicDisplayNameManager {
         add_action('wp_ajax_ddnm_process_batch', array($this, 'ajax_process_batch'));
         add_action('user_register', array($this, 'set_new_user_display_name'));
         add_action('profile_update', array($this, 'update_user_display_name'));
+        add_filter('plugin_action_links_' . plugin_basename(__FILE__), array($this, 'add_plugin_action_links'));
     }
     
     public function add_admin_menu() {
-        add_options_page(
+        add_management_page(
             __('Dynamic Display Name Manager', 'dynamic-display-name'),
             __('Display Name Manager', 'dynamic-display-name'),
             'manage_options',
@@ -52,8 +53,14 @@ class DynamicDisplayNameManager {
         );
     }
     
+    public function add_plugin_action_links($links) {
+        $settings_link = '<a href="' . admin_url('tools.php?page=dynamic-display-name-manager') . '">' . __('Settings', 'dynamic-display-name') . '</a>';
+        array_unshift($links, $settings_link);
+        return $links;
+    }
+    
     public function enqueue_admin_scripts($hook) {
-        if ($hook !== 'settings_page_dynamic-display-name-manager') {
+        if ($hook !== 'tools_page_dynamic-display-name-manager') {
             return;
         }
         

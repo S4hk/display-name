@@ -91,3 +91,6 @@ msgstr "خطأ في الخادم"
 
 msgid "Error"
 msgstr "خطأ"
+
+msgid "Settings"
+msgstr "الإعدادات"

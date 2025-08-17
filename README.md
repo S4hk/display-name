@@ -14,7 +14,7 @@ A WordPress plugin that allows administrators to configure user display names us
 
 1. Download or clone this plugin to your WordPress plugins directory:
    ```
-   wp-content/plugins/display-name/
+   wp-content/plugins/dynamic-display-name-manager/
    ```
 
 2. Activate the plugin through the WordPress admin panel:
@@ -26,7 +26,7 @@ A WordPress plugin that allows administrators to configure user display names us
 
 ### Configuration
 
-1. Navigate to **Settings** > **Display Name Manager** in your WordPress admin
+1. Navigate to **Tools** > **Display Name Manager** in your WordPress admin
 2. Select the fields you want to include in user display names:
    - ☐ Username
    - ☐ Email
@@ -35,6 +35,13 @@ A WordPress plugin that allows administrators to configure user display names us
    - ☐ Website
    - ☐ Role
 3. Click **Save Settings**
+
+### Alternative Access
+
+You can also access the plugin settings directly from the Plugins page:
+1. Go to **Plugins** > **Installed Plugins**
+2. Find "Dynamic Display Name Manager"
+3. Click the **Settings** link below the plugin name
 
 ### Updating Existing Users
 
@@ -75,7 +82,7 @@ The plugin uses these WordPress hooks:
 ## Code Structure
 
 ```
-display-name/
+dynamic-display-name-manager/
 ├── dynamic-display-name-manager.php  # Main plugin file
 ├── admin.js                         # Admin interface JavaScript
 ├── admin.css                        # Admin interface styling
