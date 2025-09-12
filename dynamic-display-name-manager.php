@@ -8,7 +8,7 @@
  * Author URI: https://github.com/s4hk
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: dynamic-display-name
+ * Text Domain: dynamic-display-name-manager
  * Domain Path: /languages
  * Requires at least: 5.0
  * Tested up to: 6.8
@@ -48,8 +48,8 @@ class DynamicDisplayNameManager {
 		if ( version_compare( PHP_VERSION, '7.4', '<' ) ) {
 			deactivate_plugins( DDNM_PLUGIN_BASENAME );
 			wp_die(
-				esc_html__( 'This plugin requires PHP 7.4 or higher.', 'dynamic-display-name' ),
-				esc_html__( 'Plugin Activation Error', 'dynamic-display-name' ),
+				esc_html__( 'This plugin requires PHP 7.4 or higher.', 'dynamic-display-name-manager' ),
+				esc_html__( 'Plugin Activation Error', 'dynamic-display-name-manager' ),
 				array( 'back_link' => true )
 			);
 		}
@@ -81,8 +81,8 @@ class DynamicDisplayNameManager {
 		}
 
 		add_management_page(
-			esc_html__( 'Dynamic Display Name Manager', 'dynamic-display-name' ),
-			esc_html__( 'Display Name Manager', 'dynamic-display-name' ),
+			esc_html__( 'Dynamic Display Name Manager', 'dynamic-display-name-manager' ),
+			esc_html__( 'Display Name Manager', 'dynamic-display-name-manager' ),
 			'manage_options',
 			'dynamic-display-name-manager',
 			array( $this, 'admin_page' )
@@ -97,7 +97,7 @@ class DynamicDisplayNameManager {
 		$settings_link = sprintf(
 			'<a href="%s">%s</a>',
 			esc_url( admin_url( 'tools.php?page=dynamic-display-name-manager' ) ),
-			esc_html__( 'Settings', 'dynamic-display-name' )
+			esc_html__( 'Settings', 'dynamic-display-name-manager' )
 		);
 		array_unshift( $links, $settings_link );
 		return $links;
@@ -109,7 +109,7 @@ class DynamicDisplayNameManager {
 				'configure' => sprintf(
 					'<a href="%s">%s</a>',
 					esc_url( admin_url( 'tools.php?page=dynamic-display-name-manager' ) ),
-					esc_html__( 'Configure', 'dynamic-display-name' )
+					esc_html__( 'Configure', 'dynamic-display-name-manager' )
 				),
 			);
 			return array_merge( $links, $row_meta );
@@ -147,9 +147,9 @@ class DynamicDisplayNameManager {
 				'nonce'      => wp_create_nonce( 'ddnm_nonce' ),
 				'batch_size' => $this->batch_size,
 				'strings'    => array(
-					'unknown_error' => esc_html__( 'Unknown error occurred', 'dynamic-display-name' ),
-					'server_error'  => esc_html__( 'Server error', 'dynamic-display-name' ),
-					'error_prefix'  => esc_html__( 'Error', 'dynamic-display-name' ),
+					'unknown_error' => esc_html__( 'Unknown error occurred', 'dynamic-display-name-manager' ),
+					'server_error'  => esc_html__( 'Server error', 'dynamic-display-name-manager' ),
+					'error_prefix'  => esc_html__( 'Error', 'dynamic-display-name-manager' ),
 				),
 			)
 		);
@@ -157,7 +157,7 @@ class DynamicDisplayNameManager {
 
 	public function admin_page() {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'dynamic-display-name' ) );
+			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'dynamic-display-name-manager' ) );
 		}
 
 		// Only process form if nonce is present and valid.
@@ -171,7 +171,7 @@ class DynamicDisplayNameManager {
 				function() {
 					printf(
 						'<div class="notice notice-error is-dismissible"><p>%s</p></div>',
-						esc_html__( 'Security check failed', 'dynamic-display-name' )
+						esc_html__( 'Security check failed', 'dynamic-display-name-manager' )
 					);
 				}
 			);
@@ -182,27 +182,27 @@ class DynamicDisplayNameManager {
 		$total_users = isset( $user_count['total_users'] ) ? $user_count['total_users'] : 0;
 		?>
 		<div class="wrap">
-			<h1><?php echo esc_html__( 'Dynamic Display Name Manager', 'dynamic-display-name' ); ?></h1>
+			<h1><?php echo esc_html__( 'Dynamic Display Name Manager', 'dynamic-display-name-manager' ); ?></h1>
 
 			<form method="post" action="">
 				<?php wp_nonce_field( 'ddnm_save_settings', 'ddnm_nonce' ); ?>
 
 				<table class="form-table">
 					<tr>
-						<th scope="row"><?php echo esc_html__( 'Display Name Fields', 'dynamic-display-name' ); ?></th>
+						<th scope="row"><?php echo esc_html__( 'Display Name Fields', 'dynamic-display-name-manager' ); ?></th>
 						<td>
 							<fieldset>
 								<legend class="screen-reader-text">
-									<span><?php echo esc_html__( 'Display Name Fields', 'dynamic-display-name' ); ?></span>
+									<span><?php echo esc_html__( 'Display Name Fields', 'dynamic-display-name-manager' ); ?></span>
 								</legend>
 								<?php
 								$fields = array(
-									'username'   => __( 'Username', 'dynamic-display-name' ),
-									'email'      => __( 'Email', 'dynamic-display-name' ),
-									'first_name' => __( 'First Name', 'dynamic-display-name' ),
-									'last_name'  => __( 'Last Name', 'dynamic-display-name' ),
-									'website'    => __( 'Website', 'dynamic-display-name' ),
-									'role'       => __( 'Role', 'dynamic-display-name' ),
+									'username'   => __( 'Username', 'dynamic-display-name-manager' ),
+									'email'      => __( 'Email', 'dynamic-display-name-manager' ),
+									'first_name' => __( 'First Name', 'dynamic-display-name-manager' ),
+									'last_name'  => __( 'Last Name', 'dynamic-display-name-manager' ),
+									'website'    => __( 'Website', 'dynamic-display-name-manager' ),
+									'role'       => __( 'Role', 'dynamic-display-name-manager' ),
 								);
 
 								foreach ( $fields as $field_key => $field_label ) {
@@ -216,31 +216,31 @@ class DynamicDisplayNameManager {
 								?>
 							</fieldset>
 							<p class="description">
-								<?php echo esc_html__( 'Select which fields to include in the display name (separated by spaces).', 'dynamic-display-name' ); ?>
+								<?php echo esc_html__( 'Select which fields to include in the display name (separated by spaces).', 'dynamic-display-name-manager' ); ?>
 							</p>
 						</td>
 					</tr>
 				</table>
 
-				<?php submit_button( __( 'Save Settings', 'dynamic-display-name' ) ); ?>
+				<?php submit_button( __( 'Save Settings', 'dynamic-display-name-manager' ) ); ?>
 			</form>
 
 			<?php if ( ! empty( $settings ) ) : ?>
 				<hr>
-				<h2><?php echo esc_html__( 'Update Existing Users', 'dynamic-display-name' ); ?></h2>
+				<h2><?php echo esc_html__( 'Update Existing Users', 'dynamic-display-name-manager' ); ?></h2>
 				<p>
 					<?php
 					/* translators: %d: Number of users */
-					echo esc_html( sprintf( __( 'Apply the current display name format to all existing users (%d users).', 'dynamic-display-name' ), $total_users ) );
+					echo esc_html( sprintf( __( 'Apply the current display name format to all existing users (%d users).', 'dynamic-display-name-manager' ), $total_users ) );
 					?>
 				</p>
 				<button type="button" id="start-batch-process" class="button button-primary">
-					<?php echo esc_html__( 'Start Batch Update', 'dynamic-display-name' ); ?>
+					<?php echo esc_html__( 'Start Batch Update', 'dynamic-display-name-manager' ); ?>
 				</button>
 
 				<div id="batch-progress" style="display: none;">
 					<p>
-						<?php echo esc_html__( 'Processing users...', 'dynamic-display-name' ); ?>
+						<?php echo esc_html__( 'Processing users...', 'dynamic-display-name-manager' ); ?>
 						<span id="progress-text">0 / <?php echo esc_html( $total_users ); ?></span>
 					</p>
 					<div class="progress-bar">
@@ -249,7 +249,7 @@ class DynamicDisplayNameManager {
 				</div>
 
 				<div id="batch-complete" style="display: none;">
-					<p><strong><?php echo esc_html__( 'Batch update completed successfully!', 'dynamic-display-name' ); ?></strong></p>
+					<p><strong><?php echo esc_html__( 'Batch update completed successfully!', 'dynamic-display-name-manager' ); ?></strong></p>
 				</div>
 			<?php endif; ?>
 		</div>
@@ -279,7 +279,7 @@ class DynamicDisplayNameManager {
 			function() {
 				printf(
 					'<div class="notice notice-success is-dismissible"><p>%s</p></div>',
-					esc_html__( 'Settings saved successfully!', 'dynamic-display-name' )
+					esc_html__( 'Settings saved successfully!', 'dynamic-display-name-manager' )
 				);
 			}
 		);
@@ -288,11 +288,11 @@ class DynamicDisplayNameManager {
 	public function ajax_process_batch() {
 		// Verify nonce first
 		if ( ! check_ajax_referer( 'ddnm_nonce', 'nonce', false ) ) {
-			wp_send_json_error( esc_html__( 'Security check failed - Invalid nonce', 'dynamic-display-name' ) );
+			wp_send_json_error( esc_html__( 'Security check failed - Invalid nonce', 'dynamic-display-name-manager' ) );
 		}
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( esc_html__( 'Security check failed - Insufficient permissions', 'dynamic-display-name' ) );
+			wp_send_json_error( esc_html__( 'Security check failed - Insufficient permissions', 'dynamic-display-name-manager' ) );
 		}
 
 		// Only access POST data after nonce verification
@@ -300,7 +300,7 @@ class DynamicDisplayNameManager {
 		$settings = get_option( $this->option_name, array() );
 
 		if ( empty( $settings ) ) {
-			wp_send_json_error( esc_html__( 'No fields selected', 'dynamic-display-name' ) );
+			wp_send_json_error( esc_html__( 'No fields selected', 'dynamic-display-name-manager' ) );
 		}
 
 		try {
@@ -330,7 +330,7 @@ class DynamicDisplayNameManager {
 			wp_send_json_error(
 				sprintf(
 					/* translators: %s: Error message */
-					esc_html__( 'Processing error: %s', 'dynamic-display-name' ),
+					esc_html__( 'Processing error: %s', 'dynamic-display-name-manager' ),
 					esc_html( $e->getMessage() )
 				)
 			);
